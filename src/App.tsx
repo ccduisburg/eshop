@@ -40,7 +40,8 @@ const App = () => {
   const [cartItems,setCartItems]=useState([] as CartItemType[])
   //const { data, isLoading, error } = useQuery<CartItemType[]>(dataproducts.products as CartItemType[]);
   const  [data,setData]=useState<CartItemType[]>(products.products as CartItemType[]);
- 
+  const [search,setSearch]=useState<string>('');
+  const filteredProducts=data.filter(item=>item.name.toLowerCase().includes(search?.length>0?search.toLowerCase():""));
   const getTotalItems = (items:CartItemType[]) => 
     items.reduce((ack:number,item)=>ack+item.amount,0);
   
@@ -70,6 +71,11 @@ const App = () => {
   // if(error) return <div>Something went wrong ...</div>
   return (
    <Wrapper>
+     <input 
+      type='search'
+      placeholder='search products'
+      onChange={(e)=>{setSearch(e.target.value)}}
+      />
      <Drawer anchor='right' open={cartOpen} onClose={()=>setCartOpen(false)}>
       <Cart cartItems={cartItems} addToCart={handleAddToCart} removeFromCart={handleRemoveFromCart}/>
      </Drawer>
@@ -79,7 +85,7 @@ const App = () => {
      </Badge>   
     </StyledButton>
      <Grid container spacing={3}>
-       {data?.map(item=>(
+       {filteredProducts?.map(item=>(
          <Grid item key={item.id} xs={12} sm={4}>
           <Item item={item} handleAddToCart={handleAddToCart} />
           </Grid>
